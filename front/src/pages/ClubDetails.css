@@ -1,0 +1,60 @@
+.club-details-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.club-details-container h1 {
+  font-size: 32px;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.club-description {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.club-updates, .club-events {
+  margin-bottom: 30px;
+}
+
+.club-updates h2, .club-events h2 {
+  font-size: 24px;
+  color: #003366;
+  margin-bottom: 15px;
+}
+
+.club-updates ul, .club-events ul {
+  list-style: none;
+  padding: 0;
+}
+
+.club-updates li, .club-events li {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007acc;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.register-button:hover {
+  background-color: #005bb5;
+}
