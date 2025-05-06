@@ -9,10 +9,15 @@ router.post("/login", async (req, res) => {
   const { email, password, role } = req.body;
 
   try {
+    // Check if email, password, and role are provided
+    if (!email || !password || !role) {
+      return res.status(400).json({ message: "Email, password, and role are required" });
+    }
+
     // Find user by email and role
     const user = await User.findOne({ email, role });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials or role" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Compare password
@@ -21,22 +26,45 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token with user ID and role
+    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Determine redirect URL based on role
-    let redirectUrl = "/";
-    if (user.role === "student") {
-      redirectUrl = "/student-dashboard";
-    } else if (user.role === "teacher") {
-      redirectUrl = "/teacher-dashboard";
+    res.json({ token, role: user.role });
+  } catch (err) {
+    console.error("Error during login:", err);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+});
+
+// Admin Login Route
+router.post("/admin-login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Find admin user by email
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid admin credentials" });
     }
 
-    res.json({ token, role: user.role, redirectUrl });
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid admin credentials" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token, role: user.role });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

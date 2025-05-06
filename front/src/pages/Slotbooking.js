@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Slotbooking.css";
+import "./SlotBooking.css";
 
 const lecturers = ["Dr. Rahul", "Dr. Mahipal", "Dr. Manoj"];
 const timeSlots = [
@@ -8,12 +8,13 @@ const timeSlots = [
   "2:00 PM - 3:00 PM",
 ];
 
-const Slotbooking = () => {
+const SlotBooking = () => {
   const [selectedLecturer, setSelectedLecturer] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [purpose, setPurpose] = useState("");
   const [success, setSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleBooking = (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ const Slotbooking = () => {
       return;
     }
 
+    // Simulate form submission
     console.log("Slot Booked:", {
       selectedLecturer,
       selectedDate,
@@ -35,11 +37,32 @@ const Slotbooking = () => {
     setSelectedDate("");
     setSelectedTimeSlot("");
     setPurpose("");
+
+    // Reset success message after a delay
+    setTimeout(() => setSuccess(false), 3000);
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    // Add logic here to filter faculty based on searchTerm
+    // For example: filterFaculty(e.target.value);
   };
 
   return (
-    <div className="slot-booking-wrapper">
+    <div className="slot-booking-container">
       <h2>Book a Lecture Slot</h2>
+      
+      {/* Search Bar */}
+      <div className="search-bar" style={{ marginBottom: '20px' }}> {/* Added some margin */}
+        <input
+          type="text"
+          placeholder="Search Faculty Name..."
+          value={searchTerm}
+          onChange={handleSearch}
+          style={{ padding: '10px', width: '300px' }} // Added some basic styling
+        />
+      </div>
+
       <form onSubmit={handleBooking} className="booking-form">
         <div className="section">
           <label>Select Lecturer:</label>
@@ -64,6 +87,7 @@ const Slotbooking = () => {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
+            required
           />
         </div>
 
@@ -91,6 +115,7 @@ const Slotbooking = () => {
             onChange={(e) => setPurpose(e.target.value)}
             placeholder="Why do you want to meet?"
             rows="4"
+            required
           />
         </div>
 
@@ -104,4 +129,4 @@ const Slotbooking = () => {
   );
 };
 
-export default Slotbooking;
+export default SlotBooking;

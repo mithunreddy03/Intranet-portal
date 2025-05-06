@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaHome,
@@ -9,31 +9,39 @@ import {
   FaChartBar,
   FaCalendarAlt,
 } from "react-icons/fa";
-import "../pages/style.css";
+import "./style.css";
 
-const StudentDashboard = () => {
+const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  // Ensure navigation works for all buttons
+  // 🔧 Redirect to login if token is missing
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const gridItems = [
-    { name: "Clubs", img: "icons8-user-groups-48.png", path: "/clubs" },
+    { name: "Clubs", img: "icons8-user-groups-48.png", path: "/admin-clubs" },
+    { name: "Courses", img: "icons8-courses-64.png", path: "/courses" },
     { name: "Slot Booking", img: "/icons8-ticket-purchase-48.png", path: "/slotbooking" },
-    { name: "Complaint", img: "icons8-complaint-100.png", path: "/complaint" },
-    { name: "Courses", img: "/icons8-courses-64.png", path: "/courses" },
     { name: "Mail", img: "/icons8-mail-48.png", path: "/mail" },
-    { name: "Hostel", img: "/icons8-hostel-64.png", path: "/hostel" },
-    { name: "Feedback", img: "/icons8-feedback-60.png", path: "/feedback" },
+    { name: "Complaint", img: "icons8-complaint-100.png", path: "/complaint" },
+    { name: "Hostel", img: "icons8-hostel-64.png", path: "/hostel" },
+    { name: "Feedback", img: "icons8-feedback-60.png", path: "/feedback" },
     { name: "More", img: "/icons8-application-32.png", path: "/more" },
   ];
 
   return (
-    <div className="home-main-container">
+    <div className="admin-dashboard-container" style={{ display: "flex", height: "100vh" }}>
       {/* Sidebar */}
-      <div className="nav-container">
+      <div className="nav-container" style={{ width: "250px", flexShrink: 0 }}>
         <div className="logo">
           <img src="/mahindra-university-logo.png" alt="Mahindra University Logo" />
         </div>
-        <button className="nav-item" onClick={() => navigate("/student-dashboard")}>
+        <button className="nav-item" onClick={() => navigate("/admin-dashboard")}>
           <FaHome className="icon" />
           <span>Home</span>
         </button>
@@ -49,8 +57,8 @@ const StudentDashboard = () => {
           <FaUser className="icon" />
           <span>Profile</span>
         </button>
-        <button 
-          className="nav-item logout-button" 
+        <button
+          className="nav-item logout-button"
           onClick={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
@@ -62,11 +70,11 @@ const StudentDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="main-container">
+      <div className="main-container" style={{ flexGrow: 1, overflowY: "auto" }}>
         <div className="header">
           <div className="user-info">
-            <h2>Student Dashboard</h2>
-            <p>Artificial Intelligence B.Tech</p>
+            <h2>Admin Dashboard</h2>
+            <p>Welcome, Admin</p>
           </div>
         </div>
 
@@ -105,4 +113,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default StudentDashboard;
+export default AdminDashboard;

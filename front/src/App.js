@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
+// Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import StudentDashboard from "./pages/StudentDashboard";
@@ -11,25 +13,28 @@ import Clubs from "./pages/Clubs";
 import ClubDetails from "./pages/ClubDetails";
 import Complaint from "./pages/Complaint";
 import Feedback from "./pages/Feedback";
-import SlotBooking from "./pages/Slotbooking";
+import SlotBooking from "./pages/SlotBooking";
 import Courses from "./pages/Courses";
 import ComplaintFeedback from "./pages/complaintFeedback";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminClubs from "./pages/AdminClubs";
+import NewClubForm from "./pages/NewClubForm";
 
 // Protected route component
 const ProtectedRoute = ({ element, requiredRole }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  
+
   if (!token) {
     // Redirect to login if not authenticated
     return <Navigate to="/login" replace />;
   }
-  
+
   if (requiredRole && role !== requiredRole) {
     // Redirect to appropriate dashboard if role doesn't match
     return <Navigate to={`/${role}-dashboard`} replace />;
   }
-  
+
   return element;
 };
 
@@ -37,35 +42,37 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is authenticated
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
 
+    // ✅ Only redirect from root path
     if (!token) {
-      // If no token, redirect to login
       navigate("/login");
-    } else if (role && !window.location.pathname.includes("dashboard")) {
-      // If authenticated but not on dashboard, redirect to appropriate dashboard
+    } else if (role && window.location.pathname === "/") {
       navigate(`/${role}-dashboard`);
     }
   }, [navigate]);
 
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public Route */}
       <Route path="/login" element={<Login />} />
-      
-      {/* Protected routes with role-based access */}
-      <Route 
-        path="/student-dashboard" 
-        element={<ProtectedRoute element={<StudentDashboard />} requiredRole="student" />} 
+
+      {/* Protected Dashboards */}
+      <Route
+        path="/student-dashboard"
+        element={<ProtectedRoute element={<StudentDashboard />} requiredRole="student" />}
       />
-      <Route 
-        path="/teacher-dashboard" 
-        element={<ProtectedRoute element={<TeacherDashboard />} requiredRole="teacher" />} 
+      <Route
+        path="/teacher-dashboard"
+        element={<ProtectedRoute element={<TeacherDashboard />} requiredRole="teacher" />}
       />
-      
-      {/* Common routes */}
+      <Route
+        path="/admin-dashboard"
+        element={<ProtectedRoute element={<AdminDashboard />} requiredRole="admin" />}
+      />
+
+      {/* Common Pages */}
       <Route path="/announcements" element={<ProtectedRoute element={<Announcements />} />} />
       <Route path="/search" element={<ProtectedRoute element={<Search />} />} />
       <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
@@ -74,18 +81,29 @@ function App() {
       <Route path="/slotbooking" element={<ProtectedRoute element={<SlotBooking />} />} />
       <Route path="/courses" element={<ProtectedRoute element={<Courses />} />} />
       <Route path="/complaint-feedback" element={<ProtectedRoute element={<ComplaintFeedback />} />} />
-      
-      {/* Student-only routes */}
-      <Route 
-        path="/clubs" 
-        element={<ProtectedRoute element={<Clubs />} requiredRole="student" />} 
+      <Route path="/clubs" element={<ProtectedRoute element={<Clubs />} />} />
+
+      {/* Student-specific */}
+      <Route
+        path="/clubs"
+        element={<ProtectedRoute element={<Clubs />} requiredRole="student" />}
       />
-      <Route 
-        path="/clubs/:clubId" 
-        element={<ProtectedRoute element={<ClubDetails />} requiredRole="student" />} 
+      <Route
+        path="/clubs/:clubId"
+        element={<ProtectedRoute element={<ClubDetails />} requiredRole="student" />}
       />
-      
-      {/* Default route */}
+
+      {/* Admin-specific */}
+      <Route
+        path="/admin-clubs"
+        element={<ProtectedRoute element={<AdminClubs />} requiredRole="admin" />}
+      />
+      <Route
+        path="/admin-clubs/new"
+        element={<ProtectedRoute element={<NewClubForm />} requiredRole="admin" />}
+      />
+
+      {/* Redirect root or unknown paths */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
